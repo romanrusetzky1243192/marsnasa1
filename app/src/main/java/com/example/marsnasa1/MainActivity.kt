@@ -14,34 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.marsnasa1.ui.theme.Marsnasa1Theme
 
 class MainActivity : ComponentActivity() {
+    private val apiKey: String ="ключ"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Marsnasa1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Marsnasa1Theme {
-        Greeting("Android")
     }
 }
