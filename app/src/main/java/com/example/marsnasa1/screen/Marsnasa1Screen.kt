@@ -2,24 +2,29 @@ package com.example.marsnasa1.screen
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.marsnasa1.viewModel.Marsnasa1ViewModel
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.marsnasa1.R
 import com.example.marsnasa1.saveimg.saveImageToGallery
-import com.example.marsnasa1.ui.theme.Purple40
+import com.example.marsnasa1.ui.theme.LightBlue
+import com.example.marsnasa1.ui.theme.LightGray
+import com.example.marsnasa1.ui.theme.DarkGray
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -35,7 +40,7 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
     val likedStates = remember { mutableStateListOf<Boolean>() }
     val commentsList = remember { mutableStateListOf<MutableList<String>>() }
     val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope() // Добавлено
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.fetchPhotos(apiKey, "Curiosity", sol, date)
@@ -54,10 +59,16 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DarkGray)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = "Mars Rover Photos",
-            style = MaterialTheme.typography.headlineSmall.copy(color = Purple40),
+            style = MaterialTheme.typography.headlineMedium.copy(color = LightBlue, fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(16.dp)
         )
 
@@ -65,7 +76,7 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
             error != null -> {
                 Text(
                     text = error,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Red),
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -73,7 +84,7 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
             loading -> {
                 Text(
                     text = "Загрузка фотографий...",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = LightBlue),
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -91,7 +102,8 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp),
+                            .padding(16.dp)
+                            .background(LightGray, shape = MaterialTheme.shapes.medium),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         AsyncImage(
@@ -100,6 +112,7 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(300.dp)
+                                .padding(8.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -130,8 +143,8 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                                     Toast.makeText(context, "Ошибка при загрузке изображения: ${e.message}", Toast.LENGTH_LONG).show()
                                 }
                             }
-                        }) {
-                            Text("Сохранить в галерею")
+                        }, colors = ButtonDefaults.buttonColors(containerColor = LightBlue)) {
+                            Text("Сохранить в галерею", color = Color.White)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -141,7 +154,7 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                             Icon(
                                 painter = painterResource(id = if (likedStates[page]) R.drawable.ic_liked else R.drawable.ic_like),
                                 contentDescription = "Like",
-                                tint = if (likedStates[page]) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                tint = if (likedStates[page]) Color.Red else Color.Gray
                             )
                         }
 
