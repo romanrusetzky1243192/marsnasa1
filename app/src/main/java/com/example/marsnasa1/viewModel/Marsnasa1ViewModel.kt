@@ -1,18 +1,22 @@
 package com.example.marsnasa1.viewModel
 
-import android.provider.ContactsContract
+
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import com.example.marsnasa1.retrofit.Marsnasa1Retrofitinstance
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.marsnasa1.model.Marsnasa1Photo
 import com.example.marsnasa1.model.Marsnasa1Response
+import com.example.marsnasa1.retrofit.Marsnasa1Retrofitinstance
 import retrofit2.Callback
 import retrofit2.Call
 import retrofit2.Response
 import kotlinx.coroutines.flow.update
-class Marsnasa1ViewModel {
+import androidx.lifecycle.ViewModel
+
+
+class Marsnasa1ViewModel : ViewModel() {
     var photos = mutableStateOf<List<Marsnasa1Photo>>(emptyList())
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
