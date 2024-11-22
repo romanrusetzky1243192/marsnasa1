@@ -16,7 +16,7 @@ import com.example.marsnasa1.screen.Marsnasa1Screen
 import com.example.marsnasa1.ui.theme.Marsnasa1Theme
 
 class MainActivity : ComponentActivity() {
-    private val apiKey: String ="ключ"
+    private val apiKey: String ="fXiQuucR6dq0W7odYCaGpUPKCbfmghuD6EseRtxT"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
