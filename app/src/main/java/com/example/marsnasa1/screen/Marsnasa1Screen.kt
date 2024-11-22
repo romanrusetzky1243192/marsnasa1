@@ -12,19 +12,22 @@ import coil.compose.AsyncImage
 import com.example.marsnasa1.viewModel.Marsnasa1ViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import com.example.marsnasa1.R
 import com.example.marsnasa1.ui.theme.Purple40
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 
-
-
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Marsnasa1Screen (apiKey: String, sol: Int, date: String?){val viewModel: Marsnasa1ViewModel = viewModel()
+fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
+    val viewModel: Marsnasa1ViewModel = viewModel<Marsnasa1ViewModel>()
     var loading by remember { mutableStateOf(true) }
+    var newComment by remember { mutableStateOf("") }
+    val likedStates = remember { mutableStateListOf<Boolean>() }
+    val commentsList = remember { mutableStateListOf<MutableList<String>>() }
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.fetchPhotos(apiKey, "Curiosity", sol, date)
@@ -34,6 +37,15 @@ fun Marsnasa1Screen (apiKey: String, sol: Int, date: String?){val viewModel: Mar
     val photos = viewModel.photos.value
     val error = viewModel.error.collectAsState(initial = null).value
     val pagerState = rememberPagerState()
+
+    if (likedStates.size != photos.size) {
+        likedStates.clear()
+        commentsList.clear()
+        for (i in photos.indices) {
+            likedStates.add(false)
+            commentsList.add(mutableListOf())
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -50,6 +62,7 @@ fun Marsnasa1Screen (apiKey: String, sol: Int, date: String?){val viewModel: Mar
                     modifier = Modifier.padding(16.dp)
                 )
             }
+
             loading -> {
                 Text(
                     text = "Загрузка фотографий...",
@@ -57,6 +70,7 @@ fun Marsnasa1Screen (apiKey: String, sol: Int, date: String?){val viewModel: Mar
                     modifier = Modifier.padding(16.dp)
                 )
             }
+
             else -> {
                 HorizontalPager(
                     state = pagerState,
@@ -80,8 +94,20 @@ fun Marsnasa1Screen (apiKey: String, sol: Int, date: String?){val viewModel: Mar
                                 .height(300.dp)
                                 .clip(RoundedCornerShape(8.dp)),
                         )
+
+                        IconButton(onClick = {
+                            likedStates[page] = !likedStates[page]
+                        }) {
+                            Icon(
+                                painter = painterResource(id = if (likedStates[page]) R.drawable.ic_liked else R.drawable.ic_like),
+                                contentDescription = "Like",
+                                tint = if (likedStates[page]) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+
                 HorizontalPagerIndicator(
                     pagerState = pagerState,
                     modifier = Modifier
