@@ -9,8 +9,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.marsnasa1.viewModel.Marsnasa1ViewModel
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import com.example.marsnasa1.R
 import com.example.marsnasa1.ui.theme.Purple40
@@ -18,6 +16,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
@@ -78,6 +77,7 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                         .padding(horizontal = 16.dp)
                 ) { page ->
                     val photo = photos[page]
+
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -90,7 +90,6 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(300.dp)
-                                .clip(RoundedCornerShape(8.dp)),
                         )
 
                         IconButton(onClick = {
@@ -123,4 +122,3 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
         }
     }
 }
-
