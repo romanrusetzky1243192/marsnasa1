@@ -1,6 +1,5 @@
 package com.example.marsnasa1.screen
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,16 +18,16 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
-    val viewModel: Marsnasa1ViewModel = viewModel<Marsnasa1ViewModel>()
+    val viewModel: Marsnasa1ViewModel = viewModel()
     var loading by remember { mutableStateOf(true) }
     var newComment by remember { mutableStateOf("") }
     val likedStates = remember { mutableStateListOf<Boolean>() }
     val commentsList = remember { mutableStateListOf<MutableList<String>>() }
-    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState()
+
     LaunchedEffect(Unit) {
         viewModel.fetchPhotos(apiKey, "Curiosity", sol, date)
         loading = false
@@ -36,7 +35,6 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
 
     val photos = viewModel.photos.value
     val error = viewModel.error.collectAsState(initial = null).value
-    val pagerState = rememberPagerState()
 
     if (likedStates.size != photos.size) {
         likedStates.clear()
@@ -104,6 +102,13 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                                 tint = if (likedStates[page]) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                             )
                         }
+
+                        CommentSection(page, commentsList, newComment, { newComment = it }, {
+                            if (newComment.isNotBlank()) {
+                                commentsList[page].add(":User     $newComment")
+                                newComment = ""
+                            }
+                        })
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -118,3 +123,4 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
         }
     }
 }
+
