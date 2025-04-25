@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
+fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?, onNavigateToDetails: () -> Unit) {
     val viewModel: Marsnasa1ViewModel = viewModel()
     var loading by remember { mutableStateOf(true) }
     var newComment by remember { mutableStateOf("") }
@@ -152,7 +152,7 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?) {
                             likedStates[page] = !likedStates[page]
                         }) {
                             Icon(
-                                painter = painterResource(id = if (likedStates[page]) R.drawable.ic_liked else R.drawable.ic_like),
+                                painter = painterResource(id = if (likedStates[page]) R.drawable.favorite_red else R.drawable.favorite_black),
                                 contentDescription = "Like",
                                 tint = if (likedStates[page]) Color.Red else Color.Gray
                             )

@@ -36,7 +36,7 @@ fun CommentSection(
     Button(
         onClick = onSendClick,
         colors = ButtonDefaults.buttonColors(containerColor = LightBlue),
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).padding(horizontal = 16.dp)
     ) {
         Text("Отправить", color = Color.White)
     }

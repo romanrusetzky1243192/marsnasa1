@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.marsnasa1.navigate.AppNavGraph
 import com.example.marsnasa1.screen.Marsnasa1Screen
 import com.example.marsnasa1.ui.theme.Marsnasa1Theme
 
@@ -21,7 +22,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Log.d("MainActivity", "Setting content")
-            Marsnasa1Screen(apiKey, sol = 1122, date = "2024-10-01")
+            AppNavGraph(apiKey)
+//            Marsnasa1Screen(apiKey, sol = 1122, date = "2024-10-01")
+
         }
     }
 }
