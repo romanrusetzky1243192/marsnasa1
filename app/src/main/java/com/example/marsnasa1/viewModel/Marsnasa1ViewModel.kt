@@ -14,7 +14,7 @@ import retrofit2.Call
 import retrofit2.Response
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.ViewModel
-
+import androidx.compose.runtime.mutableIntStateOf
 
 class Marsnasa1ViewModel : ViewModel() {
     var photos = mutableStateOf<List<Marsnasa1Photo>>(emptyList())
