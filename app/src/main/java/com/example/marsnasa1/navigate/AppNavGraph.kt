@@ -118,7 +118,7 @@ fun AppNavGraph(apiKey: String) {
                 }
             }
             composable("search") {
-                Marsnasa1SearchScreen(){
+                Marsnasa1SearchScreen(apiKey){
                     navController.navigate("photo")
                 }
             }
