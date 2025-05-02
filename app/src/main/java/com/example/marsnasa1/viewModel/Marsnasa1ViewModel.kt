@@ -18,6 +18,13 @@ import androidx.compose.runtime.mutableIntStateOf
 
 class Marsnasa1ViewModel : ViewModel() {
     var photos = mutableStateOf<List<Marsnasa1Photo>>(emptyList())
+
+
+    var photosForSearch = mutableStateOf<List<Marsnasa1Photo>>(emptyList())
+    var photosSizeForSearch = mutableIntStateOf(0)
+    var isLoadingForSearch  = mutableStateOf(false)
+
+
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
 
@@ -32,6 +39,39 @@ class Marsnasa1ViewModel : ViewModel() {
                     Log.d(
                         "MarsRoverViewModel",
                         "Успешный ответ: количество фотографий = ${photos.value.size}"
+                    )
+                } else {
+                    _error.update { "Ошибка: ${response.code()} ${response.message()}" }
+                    Log.e(
+                        "MarsRoverViewModel",
+                        "Ошибка ответа: ${response.code()} ${response.message()}"
+                    )
+                }
+            }
+
+            override fun onFailure(call: Call<Marsnasa1Response>, t: Throwable) {
+                Log.e("MarsRoverViewModel", "Ошибка: ${t.message}")
+                _error.update { "Ошибка: ${t.localizedMessage}" }
+            }
+        })
+    }
+
+    fun fetchPhotosForSearch(apiKey: String, rover: String, sol: Int) {
+        isLoadingForSearch.value = true
+        Log.d("MarsRoverViewModel", "Запрос к API ForSearch: sol=$sol, apiKey=$apiKey")
+        val call = Marsnasa1Retrofitinstance.api.getPhotosForSearch(rover,  sol, apiKey)
+
+
+        call.enqueue(object : Callback<Marsnasa1Response> {
+            override fun onResponse(call: Call<Marsnasa1Response>, response: Response<Marsnasa1Response>) {
+                if (response.isSuccessful) {
+                    photosForSearch.value = response.body()?.photos ?: emptyList()
+                    _error.update { null }
+                    photosSizeForSearch.value = photosForSearch.value.size
+                    isLoadingForSearch.value = false
+                    Log.d(
+                        "MarsRoverViewModel",
+                        "Успешный ответ: количество фотографий = ${photosForSearch.value.size}"
                     )
                 } else {
                     _error.update { "Ошибка: ${response.code()} ${response.message()}" }
