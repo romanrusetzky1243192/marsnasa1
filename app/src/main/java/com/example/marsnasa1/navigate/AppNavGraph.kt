@@ -45,7 +45,7 @@ fun AppNavGraph(apiKey: String) {
     val items = listOf(
         NavItem("Mars rover photos", "mars"),
         NavItem("Поиск", "search") ,
-        NavItem("Галерея", "photo")
+        NavItem("Избранное", "photo")
     )
     Scaffold(
         scaffoldState = scaffoldState,
