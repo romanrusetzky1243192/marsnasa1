@@ -32,12 +32,13 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
-
+import com.example.marsnasa1.viewModel.ImageViewModel
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?, onNavigateToDetails: () -> Unit) {
     val viewModel: Marsnasa1ViewModel = viewModel()
+    val viewModelForFavoriteImage: ImageViewModel = viewModel()
     var loading by remember { mutableStateOf(true) }
     var newComment by remember { mutableStateOf("") }
     val likedStates = remember { mutableStateListOf<Boolean>() }
@@ -153,11 +154,36 @@ fun Marsnasa1Screen(apiKey: String, sol: Int, date: String?, onNavigateToDetails
 
                         IconButton(onClick = {
                             likedStates[page] = !likedStates[page]
+
+                            val imageUrl = photo.img_src
+                            val imageEarthDate = photo.earth_date
+
+
+                            viewModelForFavoriteImage.run {
+                                if (isFavorite(imageUrl)) {
+                                    removeFromFavorites(imageUrl)
+                                    likedStates[page] = false
+                                    Toast.makeText(context, "Удалено из избранного", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    addToFavorites(imageUrl, imageEarthDate)
+                                    likedStates[page] = true
+                                    Toast.makeText(context, "Добавлено в избранное", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
                         }) {
                             Icon(
-                                painter = painterResource(id = if (likedStates[page]) R.drawable.favorite_red else R.drawable.favorite_black),
+                                painter = painterResource(
+                                    id = if (viewModelForFavoriteImage.isFavorite(photo.img_src) || likedStates[page])
+                                        R.drawable.favorite_red
+                                    else
+                                        R.drawable.favorite_black
+                                ),
                                 contentDescription = "Like",
-                                tint = if (likedStates[page]) Color.Red else Color.Gray
+                                tint = if (viewModelForFavoriteImage.isFavorite(photo.img_src) || likedStates[page])
+                                    Color.Red
+                                else
+                                    Color.Gray
                             )
                         }
 
