@@ -43,6 +43,7 @@ import com.example.marsnasa1.saveimg.saveImageToGallery
 import com.example.marsnasa1.ui.theme.DarkGray
 import com.example.marsnasa1.ui.theme.LightBlue
 import com.example.marsnasa1.ui.theme.LightGray
+import com.example.marsnasa1.viewModel.ImageViewModel
 import com.example.marsnasa1.viewModel.Marsnasa1ViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -59,6 +60,7 @@ fun SearchAnswer(
 ) {
 
     val viewModel: Marsnasa1ViewModel = viewModel()
+    val viewModelForFavoriteImage: ImageViewModel = viewModel()
     val loading by viewModel.isLoadingForSearch
     val likedStates = remember { mutableStateListOf<Boolean>() }
     val pagerState = rememberPagerState()
@@ -175,11 +177,35 @@ fun SearchAnswer(
 
                         IconButton(onClick = {
                             likedStates[page] = !likedStates[page]
+
+                            val imageUrl = photo.img_src
+                            val imageEarthDate = photo.earth_date
+
+
+                            viewModelForFavoriteImage.run {
+                                if (isFavorite(imageUrl)) {
+                                    removeFromFavorites(imageUrl)
+                                    likedStates[page] = false
+                                    Toast.makeText(context, "Удалено из избранного", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    addToFavorites(imageUrl, imageEarthDate)
+                                    likedStates[page] = true
+                                    Toast.makeText(context, "Добавлено в избранное", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }) {
                             Icon(
-                                painter = painterResource(id = if (likedStates[page]) R.drawable.favorite_red else R.drawable.favorite_black),
+                                painter = painterResource(
+                                    id = if (viewModelForFavoriteImage.isFavorite(photo.img_src) || likedStates[page])
+                                        R.drawable.favorite_red
+                                    else
+                                        R.drawable.favorite_black
+                                ),
                                 contentDescription = "Like",
-                                tint = if (likedStates[page]) Color.Red else Color.Gray
+                                tint = if (viewModelForFavoriteImage.isFavorite(photo.img_src) || likedStates[page])
+                                    Color.Red
+                                else
+                                    Color.Gray
                             )
                         }
 
