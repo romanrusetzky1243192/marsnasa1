@@ -34,6 +34,8 @@ import com.example.marsnasa1.ui.theme.DarkDarkGray
 import com.example.marsnasa1.ui.theme.DarkGray
 import com.example.marsnasa1.ui.theme.LightGray
 import kotlinx.coroutines.launch
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.marsnasa1.screen.FavoritesScreen
 
 @Composable
 fun AppNavGraph(apiKey: String) {
@@ -41,6 +43,10 @@ fun AppNavGraph(apiKey: String) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
+
+
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
 
     val items = listOf(
         NavItem("Mars rover photos", "mars"),
@@ -51,7 +57,10 @@ fun AppNavGraph(apiKey: String) {
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = {  },
+                title = {  Text(
+                    text = getTitleByRoute(currentRoute),
+                    color = Color.LightGray
+                ) },
                 navigationIcon = {
                     IconButton(onClick = {
                         coroutineScope.launch {
@@ -78,13 +87,7 @@ fun AppNavGraph(apiKey: String) {
                     modifier = Modifier.size(128.dp).padding(16.dp)
                 )
 
-//                Text(
-//                    "Меню",
-//                    color = Color.White,
-//                    fontSize = 20.sp,
-//                    fontWeight = FontWeight.Bold,
-//                    modifier = Modifier.padding(16.dp)
-//                )
+
                 items.forEach { item ->
                     Text(
                         text = item.title,
@@ -122,15 +125,22 @@ fun AppNavGraph(apiKey: String) {
                     navController.navigate("photo")
                 }
             }
-
             composable("photo") {
-                Marsnasa1Screen(apiKey, sol = 1100, date = "2023-10-01"){
-                    navController.navigate("search")
-                }
+            FavoritesScreen()
             }
         }
     }
 
 }
+
+fun getTitleByRoute(route: String?): String {
+    return when (route) {
+        "mars" -> ""
+        "search" -> "Поиск"
+        "photo" -> "Избранное"
+        else -> "MarsNasa App"
+    }
+}
+
 
 data class NavItem(val title: String, val route: String)
